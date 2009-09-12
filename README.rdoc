@@ -12,8 +12,8 @@ PageCacheFu adds the following missing features:
 * Set up a cronjob to periodically run the <code>page_cache_fu:sweep_expired_page_caches</code> Rake task.
 * Tell your Apache to use the new cache location using something like this in your <code>Virtualhost</code> config:
 
+<code>
   RewriteMap uri_escape int:escape
-  
   <Directory /path/to/my/rails_app/public/>
     RewriteEngine On
     RewriteCond %{REQUEST_METHOD} GET [NC]
@@ -24,6 +24,7 @@ PageCacheFu adds the following missing features:
     RewriteCond %{DOCUMENT_ROOT}/cache/%{HTTP_HOST}/index.html -f
     RewriteRule ^$ cache/%{HTTP_HOST}/index.html
   </Directory>
+</code>
 
 If someone could supply a nginx sample config, it'd be greatly appreciated...
 
