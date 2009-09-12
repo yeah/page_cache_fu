@@ -1,0 +1,28 @@
+= PageCacheFu
+
+PageCacheFu adds the following missing features:
+
+* Expiry time for cached pages (using <code>:expires_in</code> option)
+* Different caches for different hostnames (e.g. subdomains)
+* Different caches for query strings
+
+== Installation
+
+# Just install the plugin, add something like <code>:expires_in => 30.minutes</code> to your <code>caches_page</code> calls.
+# Set up a cronjob to periodically run the <code>page_cache_fu:sweep_expired_page_caches</code> Rake task.
+# Tell your Apache to use the new cache location using something like this in your <code>Virtualhost</code> config:
+
+  RewriteMap uri_escape int:escape
+  
+  <Directory /path/to/my/rails_app/public/>
+    RewriteEngine On
+    RewriteCond %{REQUEST_METHOD} GET [NC]
+    RewriteCond %{DOCUMENT_ROOT}/cache/%{HTTP_HOST}%{REQUEST_URI}%{QUERY_STRING}.html -f
+    RewriteRule ^([^.]+)$ cache/%{HTTP_HOST}/$1${uri_escape:%{QUERY_STRING}}.html [L]		
+
+    RewriteCond %{REQUEST_METHOD} GET [NC]
+    RewriteCond %{DOCUMENT_ROOT}/cache/%{HTTP_HOST}/index.html -f
+    RewriteRule ^$ cache/%{HTTP_HOST}/index.html
+  </Directory>
+
+Copyright (c) 2009 Jan Schulz-Hofen, ROCKET RENTALS GmbH, released under the MIT license
