@@ -8,9 +8,9 @@ PageCacheFu adds the following missing features:
 
 == Installation
 
-# Just install the plugin, add something like <code>:expires_in => 30.minutes</code> to your <code>caches_page</code> calls.
-# Set up a cronjob to periodically run the <code>page_cache_fu:sweep_expired_page_caches</code> Rake task.
-# Tell your Apache to use the new cache location using something like this in your <code>Virtualhost</code> config:
+* Just install the plugin, add something like <code>:expires_in => 30.minutes</code> to your <code>caches_page</code> calls.
+* Set up a cronjob to periodically run the <code>page_cache_fu:sweep_expired_page_caches</code> Rake task.
+* Tell your Apache to use the new cache location using something like this in your <code>Virtualhost</code> config:
 
   RewriteMap uri_escape int:escape
   
@@ -24,5 +24,7 @@ PageCacheFu adds the following missing features:
     RewriteCond %{DOCUMENT_ROOT}/cache/%{HTTP_HOST}/index.html -f
     RewriteRule ^$ cache/%{HTTP_HOST}/index.html
   </Directory>
+
+If someone could supply a nginx sample config, it'd be greatly appreciated...
 
 Copyright (c) 2009 Jan Schulz-Hofen, ROCKET RENTALS GmbH, released under the MIT license
