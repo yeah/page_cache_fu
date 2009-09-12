@@ -1,12 +1,12 @@
 module PageCacheFu
   module Patches
-    module ClassMethods
+    module CachingPagesClassMethods
   
       def caches_page_with_expiry(*actions)
-        if actions.last.is_a?(::Hash) and (expires_in = actions.last.delete(:expires_in))
-          self.expiry_page_cache_options ||= {}
+        if actions.last.is_a?(::Hash)
+          self.page_cache_fu_options ||= {}
           actions[0..-2].each do |action|
-            self.expiry_page_cache_options[action.to_sym] = (Time.now + expires_in)
+            self.page_cache_fu_options[action.to_sym] = actions.last
           end
         end
         caches_page_without_expiry(*actions)
@@ -18,31 +18,63 @@ module PageCacheFu
 
     end
 
-    module InstanceMethods
+    module CachingPages
 
       def expire_page_with_domain_and_query(options)
-        expire_page_without_domain_and_query(PageCacheFu::page_cache_path_with_domain_and_query(options, request))
+        expire_page_without_domain_and_query(page_cache_fu_path(options))
       end
       
       def cache_page_with_domain_and_query(content = nil, options = nil)
-        path = PageCacheFu::page_cache_path_with_domain_and_query(options, request)
+        path = page_cache_fu_path(options)
         cache_page_without_domain_and_query(content, path)
       end
 
       def cache_page_with_expiry(content = nil, options = nil)
         cache_page_without_expiry(content, options)
-        if self.class.expiry_page_cache_options and (expires_in = self.class.expiry_page_cache_options[params[:action].to_sym])
-          file = self.class.send(:page_cache_path, PageCacheFu::page_cache_path_with_domain_and_query((options||request.path), request))
-          File.utime(expires_in.to_time, expires_in.to_time, file) if File.exists?(file)
+        if self.class.page_cache_fu_options[params[:action].to_sym] and (expires_in = self.class.page_cache_fu_options[params[:action].to_sym][:expires_in])
+          expires_at = Time.now + expires_in
+          file = self.class.send(:page_cache_path, options)
+          File.utime(expires_at, expires_at, file) if File.exists?(file)
         end
       end
 
       def self.included(base)
         base.send(:alias_method_chain, :expire_page, :domain_and_query)
-        base.send(:alias_method_chain, :cache_page, :domain_and_query)
         base.send(:alias_method_chain, :cache_page, :expiry)
+        base.send(:alias_method_chain, :cache_page, :domain_and_query)
       end
 
+    end
+    
+    module Base
+      def page_cache_fu_path(orig_path)
+
+        page_cache_fu_options = case orig_path
+          when Hash
+            self.class.page_cache_fu_options[orig_path[:action].to_sym]
+          when String
+            nil
+          else
+            self.class.page_cache_fu_options[self.request[:action].to_sym]
+        end
+
+        path = (page_cache_fu_options[:page_cache_directory]||"/#{self.request.host}/")
+        path << case orig_path
+          when Hash
+            url_for(orig_path.merge(:only_path => true, :skip_relative_url_root => true, :format => params[:format]))
+          when String
+            orig_path
+          else
+            if self.request.path.empty? || self.request.path == '/'
+              '/index'
+            else
+              self.request.path
+            end
+        end
+        path << CGI::escape(self.request.query_string) if !self.request.query_string.blank? and page_cache_fu_options[:include_query_string] != false
+        return path
+      end
+      
     end
   end
   module CacheSweeper
@@ -85,24 +117,5 @@ module PageCacheFu
       return match
     end
   end
-
-  def self.page_cache_path_with_domain_and_query(orig_path, request)
-    path = "/#{request.host}/"
-    path << case orig_path
-    when Hash
-      url_for(orig_path.merge(:only_path => true, :skip_relative_url_root => true, :format => params[:format]))
-    when String
-      orig_path
-    else
-      if request.path.empty? || request.path == '/'
-        '/index'
-      else
-        request.path
-      end
-    end
-    path << CGI::escape(request.query_string) unless request.query_string.blank?
-    return path
-  end
-
 
 end

@@ -26,4 +26,44 @@ PageCacheFu adds the following missing features:
 
 If someone could supply a nginx sample config, it'd be greatly appreciated...
 
+== Options for +caches_page+
+
+You can use the following options with <code>caches_page</code> in your controllers:
+
+=== +:expires_in+
+
+Use this to specify a time interval after which the cache should expire. Example:
+
+    caches_page :show, :expires_in => 30.minutes
+
+=== +:include_query_string+
+
+By default, page_cache_fu stores the query string as part of the cached filename to enable caching for stuff like pagination and search results. You can disable this by setting this to <code>false</code>, like so:
+
+    caches_page :show, :include_query_string => false
+
+=== +:page_cache_directory+
+
+By default, page_cache_fu stores cached files in <code>#{RAILS_ROOT}/public/cache/#{hostname}</code>. If you want to override this, you can use this option. Examples:
+
+    caches_page :show, :page_cache_directory => '/'                     # yields #{RAILS_ROOT}/public/cache (without hostname)
+    caches_page :show, :page_cache_directory => '/../'                  # yields #{RAILS_ROOT}/public
+    caches_page :show, :page_cache_directory => '/../my_other_folder'   # yields #{RAILS_ROOT}/public/my_other_folder
+
+== Sweeper options
+
+The sweeper is usually called via the <code>page_cache_fu:sweep_expired_page_caches</code> Rake task. However, you can call <code>PageCacheFu::CacheSweeper#sweep_if_expired</code> on your own, if you like. It takes the cache directory as a first parameter and a hash of options as the second. These options are:
+
+=== +:recursive+
+
+Set this to <code>true</code> to descend into subdirectories. (Default in the Rake task)
+
+=== +:match_mode+
+
+Required Unix file permissions. Specify this to tell the sweeper to skip files and directories which don't satisfy your required permissions. For example, <code>:match_mode => 220</code> will skip files which aren't writable by both the file owner and group. 
+
+== Credits
+
+The initial code for hostname based caching has been taken from Nate Bibler (initial post) and Andy Triggs (in the comments), http://launchpad.rocketjumpindustries.com/posts/5-defining-a-dynamic-page-cache-loction-by-subdomain-in-rails
+
 Copyright (c) 2009 Jan Schulz-Hofen, ROCKET RENTALS GmbH, released under the MIT license
