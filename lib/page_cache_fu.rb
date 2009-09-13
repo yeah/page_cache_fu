@@ -53,7 +53,7 @@ module PageCacheFu
           when Hash
             self.class.page_cache_fu_options[orig_path[:action].to_sym]
           when String
-            nil
+            {}
           else
             self.class.page_cache_fu_options[self.request[:action].to_sym]
         end
