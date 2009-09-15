@@ -1,5 +1,4 @@
 require 'ftools'
-require 'erb'
 
 # Install page_cache_sweeper into the local script directory.
 #
