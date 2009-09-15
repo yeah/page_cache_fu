@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+$KCODE = 'u' 
+require File.join(File.dirname(__FILE__),'../vendor/plugins/page_cache_fu/lib/page_cache_fu/cache_sweeper.rb')
+PageCacheFu::CacheSweeper.sweep_if_expired(File.join(File.dirname(__FILE__),'../public/cache'), :recursive => true)
