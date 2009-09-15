@@ -62,6 +62,10 @@ Set this to <code>true</code> to descend into subdirectories. (Default in the Ra
 
 Required Unix file permissions. Specify this to tell the sweeper to skip files and directories which don't satisfy your required permissions. For example, <code>:match_mode => 220</code> will skip files which aren't writable by both the file owner and group. 
 
+== Version
+
+0.1
+
 == Credits
 
 The initial code for hostname based caching has been taken from Nate Bibler (initial post) and Andy Triggs (in the comments), http://launchpad.rocketjumpindustries.com/posts/5-defining-a-dynamic-page-cache-loction-by-subdomain-in-rails
