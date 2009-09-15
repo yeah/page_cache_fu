@@ -12,7 +12,7 @@ PageCacheFu adds the following missing features:
 
     ruby script/plugin install git://github.com/yeah/page_cache_fu.git
 
-* add something like <code>:expires_in => 30.minutes</code> to your <code>caches_page</code> calls.
+* Add something like <code>:expires_in => 30.minutes</code> to your <code>caches_page</code> calls.
 * Set up a cronjob to periodically run the <code>page_cache_sweeper</code> script using something like this in your <code>crontab</code>:
 
     * * * * * www-data /usr/bin/ruby /path/to/my/rails_app/script/page_cache_sweeper
