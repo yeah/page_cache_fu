@@ -69,7 +69,7 @@ The sweeper is usually called via the <code>page_cache_sweeper</code> script. Ho
 
 === <code>:recursive</code>
 
-Set this to <code>true</code> to descend into subdirectories. (Default in the Rake task)
+Set this to <code>true</code> to descend into subdirectories. (Default in the sweeper script)
 
 === <code>:match_mode</code>
 
