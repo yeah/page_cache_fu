@@ -33,6 +33,12 @@ PageCacheFu adds the following missing features:
 
 If someone could supply a nginx sample config, it'd be greatly appreciated...
 
+== Where's the metadata?
+
+PageCacheFu sets the file modification timestamp of cached pages to the point in time when the cached page is set to expire. The sweeper is periodically checking the filesystem for files which have a modification timestamp that is past the current date and deletes those files.
+
+If you have issues with future dates as modification timestamps or can't use the modification timestamps like this, PageCacheFu's page cache expiration mechanism might not be the right thing for you.
+
 == Options for +caches_page+
 
 You can use the following options with <code>caches_page</code> in your controllers:
@@ -59,7 +65,7 @@ By default, page_cache_fu stores cached files in <code>#{RAILS_ROOT}/public/cach
 
 == Sweeper options
 
-The sweeper is usually called via the <code>page_cache_fu:sweep_expired_page_caches</code> Rake task. However, you can call <code>PageCacheFu::CacheSweeper#sweep_if_expired</code> on your own, if you like. It takes the cache directory as a first parameter and a hash of options as the second. These options are:
+The sweeper is usually called via the <code>page_cache_sweeper</code> script. However, you can call <code>PageCacheFu::CacheSweeper#sweep_if_expired</code> on your own, if you like. It takes the cache directory as a first parameter and a hash of options as the second. These options are:
 
 === <code>:recursive</code>
 
