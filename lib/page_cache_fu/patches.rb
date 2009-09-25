@@ -30,7 +30,10 @@ module PageCacheFu
       end
 
       def cache_page_with_expiry(content = nil, options = nil)
-        cache_page_without_expiry(content, options)
+        begin
+          cache_page_without_expiry(content, options)
+        rescue Errno::EEXIST # rescue error caused by race condition on filesystem, this should be done in Rails' ActionController::Caching::Pages::ClassMethods#cache_page
+        end
         if self.class.page_cache_fu_options[params[:action].to_sym] and (expires_in = self.class.page_cache_fu_options[params[:action].to_sym][:expires_in])
           expires_at = Time.now + expires_in
           file = self.class.send(:page_cache_path, options)
