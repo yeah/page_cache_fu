@@ -33,6 +33,7 @@ module PageCacheFu
         begin
           cache_page_without_expiry(content, options)
         rescue Errno::EEXIST # rescue error caused by race condition on filesystem, this should be done in Rails' ActionController::Caching::Pages::ClassMethods#cache_page
+        rescue Errno::EISDIR # weird uris including forward slashes produce this. so what, just be quiet about it.
         end
         if self.class.page_cache_fu_options[params[:action].to_sym] and (expires_in = self.class.page_cache_fu_options[params[:action].to_sym][:expires_in])
           expires_at = Time.now + expires_in
