@@ -59,7 +59,7 @@ Use this to specify a time interval after which the cache should expire. Example
 
     caches_page :show, :expires_in => 30.minutes
 
-(cokron sais that <code>:expires_in</code> has to be specified. I didn't have time to verify and fix this yet.)
+(cokron says that <code>:expires_in</code> has to be specified. I didn't have time to verify and fix this yet. See issue #1)
 
 === <code>:include_query_string</code>
 
