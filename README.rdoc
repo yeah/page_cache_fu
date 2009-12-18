@@ -17,7 +17,9 @@ PageCacheFu adds the following missing features:
 
     * * * * * www-data /usr/bin/ruby /path/to/my/rails_app/script/page_cache_sweeper
 
-* Tell your Apache to use the new cache location using something like this in your <code>Virtualhost</code> config:
+* Tell your web server to use the new cache location using something like this in your config:
+
+** Apache
 
     RewriteMap uri_escape int:escape
     <Directory /path/to/my/rails_app/public/>
@@ -30,8 +32,15 @@ PageCacheFu adds the following missing features:
       RewriteCond %{DOCUMENT_ROOT}/cache/%{HTTP_HOST}/index.html -f
       RewriteRule ^$ cache/%{HTTP_HOST}/index.html
     </Directory>
+** nginx (thanks to cokron)
 
-If someone could supply a nginx sample config, it'd be greatly appreciated...
+    if (-f $document_root/cache/$host/$uri/index.html) {
+      rewrite (.*) /cache/$host/$1/index.html break;
+    }
+
+    if (-f $document_root/cache/$host/$uri.html) {
+      rewrite (.*) /cache/$host/$1.html break;
+    }
 
 == Where's the metadata?
 
