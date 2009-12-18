@@ -53,7 +53,7 @@ module PageCacheFu
     module Base
       def page_cache_fu_path(orig_path)
 
-        page_cache_fu_options = case orig_path
+        page_cache_fu_options = self.class.page_cache_fu_options.nil? ? {} : case orig_path
           when Hash
             self.class.page_cache_fu_options[orig_path[:action].to_sym]
           when String
