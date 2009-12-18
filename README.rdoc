@@ -19,7 +19,7 @@ PageCacheFu adds the following missing features:
 
 * Tell your web server to use the new cache location using something like this in your config:
 
-** Apache
+Apache
 
     RewriteMap uri_escape int:escape
     <Directory /path/to/my/rails_app/public/>
@@ -32,7 +32,8 @@ PageCacheFu adds the following missing features:
       RewriteCond %{DOCUMENT_ROOT}/cache/%{HTTP_HOST}/index.html -f
       RewriteRule ^$ cache/%{HTTP_HOST}/index.html
     </Directory>
-** nginx (thanks to cokron)
+
+nginx (thanks to cokron)
 
     if (-f $document_root/cache/$host/$uri/index.html) {
       rewrite (.*) /cache/$host/$1/index.html break;
